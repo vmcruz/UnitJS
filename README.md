@@ -18,7 +18,7 @@ No, you don't!. UnitJS was built for personal use, but you're free to use it if 
 If you just started learning JavaScript, perhaps you shouldn't use this at all. You need to understand what's happening behind scenes before using this library (or any library or framework for that matter).
 
 # Caveats
-- If you are using a library that uses the dollar sign `$`, UnitJS will try to use `_$` instead, if not possible it will throw an Error.
+- If you are using a library that uses the dollar sign `$`, UnitJS will try to use `UnitJS` instead, if not possible it will throw an Error. If no error thrown, `unijs` will also be available.
 
 # That being said
 Feel free to fork and redo as much as you need. Let me know what you did or change to build a better UnitJS.

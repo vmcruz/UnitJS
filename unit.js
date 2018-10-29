@@ -1,8 +1,8 @@
 (function(global) {
 	if (typeof $ !== 'function') {
-		global.$ = global.unit = (...selectors) => new UNIT(selectors);
+		global.$ = global.unitjs = (...selectors) => new UNIT(selectors);
 	} else if(typeof UnitJS !== 'function') {
-		global.UnitJS = global.unit = (...selectors) => new UNIT(selectors);
+		global.UnitJS = global.unitjs = (...selectors) => new UNIT(selectors);
 	} else {
 		throw new Error(`You are using a library that already uses the dollar sign '$'.`);
 	}
