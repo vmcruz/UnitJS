@@ -1,5 +1,5 @@
 # About
-UnitJS is a personal project I've been developing over the years. It follows the [`Singleton Pattern`](https://en.wikipedia.org/wiki/Singleton_pattern) along with the [`IIFE Pattern`](http://benalman.com/news/2010/11/immediately-invoked-function-expression/). Started as a simple script for one website, but I realized that as I developed new websites, the same functionality was required. Instead of copy&pasting the code, I decided to start building this library for personal use.
+UnitJS is a personal project I've been developing over the years. It follows the `Revealing Module Pattern` along with the [`IIFE Pattern`](http://benalman.com/news/2010/11/immediately-invoked-function-expression/). Started as a simple script for one website, but I realized that as I developed new websites, the same functionality was required. Instead of copy&pasting the code, I decided to start building this library for personal use.
 
 The aim of this library is not the support of all web browsers, but to have a lightweight library with JQuery like syntax for specific projects such as: Extensions, plugins, and/or applications. And yes, **the browser needs to support ES6 specification**.
 
