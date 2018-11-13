@@ -7,7 +7,6 @@ module.exports = (config) => {
         ],
         reporters: ['spec', 'coverage'],
         colors: true,
-        browsers: ['ChromeHeadless'],
         preprocessors: {
             './src/*.js': 'coverage',
         },
@@ -27,6 +26,6 @@ module.exports = (config) => {
             failTest: true,
         },
         logLevel: config.LOG_INFO,
-        singleRun: false,
+        singleRun: true,
     });
 }
