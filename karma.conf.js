@@ -1,14 +1,13 @@
 module.exports = (config) => {
     config.set({
-        frameworks: ['mocha', 'chai'],
+        frameworks: ['jasmine'],
         files: [
             './src/unit.js',
             './test/*.spec.js',
         ],
-        reporters: ['mocha', 'coverage'],
+        reporters: ['spec', 'coverage'],
         colors: true,
         browsers: ['ChromeHeadless'],
-        singleRun: true,
         preprocessors: {
             './src/*.js': 'coverage',
         },
@@ -19,13 +18,15 @@ module.exports = (config) => {
                 { type: 'text' },
             ]
         },
-        mochaReporter: {
-            output: 'full',
-            showDiff: true,
-            ignoreSkipped: true,
-            printFirstSuccess: true,
-
+        specReporter: {
+            supressErrorSummary: false,
+            supressFailed: false,
+            supressPassed: false,
+            supressSkipped: false,
+            showSpecTiming: true,
+            failTest: true,
         },
         logLevel: config.LOG_INFO,
-    });;
+        singleRun: false,
+    });
 }

@@ -1,5 +1,6 @@
-describe('Add unit testing with mocha & chai', () => {
-    it('Should pass', () => {
-        assert.isOk(1 === 1);
+describe('UnitJS.install', () => {
+    it('should install $ as UnitJS alias', () => {
+        UnitJS.install('$');
+        expect($.isUnitJS()).toBeTruthy();
     });
 });
