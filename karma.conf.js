@@ -7,6 +7,7 @@ module.exports = (config) => {
         ],
         reporters: ['spec', 'coverage'],
         colors: true,
+        browsers: ['ChromeHeadless'],
         preprocessors: {
             './src/*.js': 'coverage',
         },
