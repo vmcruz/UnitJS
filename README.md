@@ -1,3 +1,5 @@
+# UnitJS v1.0.0 [![CircleCI](https://circleci.com/gh/vmcruz/UNIT/tree/master.svg?style=svg)](https://circleci.com/gh/vmcruz/UNIT/tree/master)
+
 # About
 UnitJS is a personal project I've been developing over the years. It follows the `Revealing Module Pattern` along with the [`IIFE Pattern`](http://benalman.com/news/2010/11/immediately-invoked-function-expression/). Started as a simple script for one website, but I realized that as I developed new websites, the same functionality was required. Instead of copy&pasting the code, I decided to start building this library for personal use.
 
