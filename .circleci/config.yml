@@ -19,5 +19,8 @@ jobs:
           paths:
             - ./node_modules
       - run:
-          name: Run tests
+          name: Run ESLint
+          command: 'npm run lint'
+      - run:
+          name: Run Karma tests
           command: 'npm run test'
