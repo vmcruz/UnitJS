@@ -2,17 +2,18 @@ module.exports = (config) => {
     config.set({
         frameworks: ['jasmine'],
         files: [
-            './src/unit.js',
-            './test/*.spec.js',
+          './src/unit.js',
+          './test/helper/fixtures.js',
+          './test/*.spec.js',
         ],
         reporters: ['spec', 'coverage'],
         colors: true,
         browsers: ['ChromeHeadless'],
         preprocessors: {
-            './src/*.js': 'coverage',
+          './src/*.js': 'coverage',
         },
         coverageReporter: {
-            dir: './build/coverage',
+            dir: './coverage',
             reporters: [
                 { type: 'html', subdir: 'html' },
                 { type: 'text' },
