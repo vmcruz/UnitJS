@@ -20,8 +20,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-window.UnitJS = (function UnitJSSingleton() {
-  const eventList = Object.keys(window).filter(e => e.match(/^on/));
+window.UnitJS = (function UnitJSSingleton(global) {
+  const eventList = Object.keys(global).filter(e => e.match(/^on/));
 
   function required(paramName, paramType) {
     throw new Error(`expects ${paramName} param to be [ ${paramType} ]`);
@@ -297,11 +297,11 @@ window.UnitJS = (function UnitJSSingleton() {
     $$.create = (element = required('ElementName', 'String')) => document.createElement(element);
 
     $$.jump = (page = required('Page', 'String')) => {
-      window.location.href = page;
-      return window.location;
+      global.location.href = page;
+      return global.location;
     };
 
-    $$.reload = () => window.location.reload();
+    $$.reload = () => global.location.reload();
 
     $$.pad = (str = required('ParamString', 'String'), padStr = required('StringPad', 'String'), length = required('Length', 'Number'), lpad = false) => {
       let paddedString = str;
@@ -385,9 +385,9 @@ window.UnitJS = (function UnitJSSingleton() {
       throw new TypeError(`${format} is not a valid string format`);
     };
 
-    $$.isUnitJS = () => $$().constructor.name === 'UNIT';
+    $$.version = () => '1.0.0';
 
-    window[globalVariable] = $$;
+    global[globalVariable] = $$;
     return $$;
   }
 
@@ -406,4 +406,4 @@ window.UnitJS = (function UnitJSSingleton() {
   });
 
   return { install };
-}());
+}(window));

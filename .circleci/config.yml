@@ -12,15 +12,21 @@ jobs:
       - restore_cache:
           key: dependency-cache-{{ checksum "package.json" }}
       - run:
-          name: Install dependencies
+          name: Install npm dependencies
           command: 'npm install'
       - save_cache:
           key: dependency-cache-{{ checksum "package.json" }}
           paths:
             - ./node_modules
       - run:
-          name: Run ESLint
+          name: Run linter
           command: 'npm run lint'
       - run:
-          name: Run Karma tests
+          name: Test UnitJS source
           command: 'npm run test'
+      - run:
+          name: Run GCC build
+          command: 'npm run build'
+      - run:
+          name: Test UnitJS build
+          command: 'npm run test-build'
