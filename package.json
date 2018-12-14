@@ -11,15 +11,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/vmcruz/UNIT.git"
+    "url": "git+https://github.com/vmcruz/UnitJS.git"
   },
   "keywords": [],
   "author": "",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/vmcruz/UNIT/issues"
+    "url": "https://github.com/vmcruz/UnitJS/issues"
   },
-  "homepage": "https://github.com/vmcruz/UNIT#readme",
+  "homepage": "https://github.com/vmcruz/UnitJS#readme",
   "dependencies": {},
   "devDependencies": {
     "eslint": "^5.10.0",
