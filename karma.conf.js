@@ -4,7 +4,8 @@ module.exports = (config) => {
     files: [
       './src/unit.js',
       './test/helper/fixtures.js',
-      './test/*.spec.js',
+      './test/helper/requiredError.js',
+      ...grep(process.argv)
     ],
     reporters: ['spec', 'coverage'],
     colors: true,
@@ -29,5 +30,13 @@ module.exports = (config) => {
     },
     logLevel: config.LOG_INFO,
     singleRun: true,
+  });
+};
+
+function grep(argv) {
+  let found = false;
+  return argv.filter((a) => {
+    if (found) return a;
+    if (a === '--') found = true;
   });
 }

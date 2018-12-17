@@ -1,7 +1,10 @@
 describe('UnitJS.length', () => {
   beforeAll(() => {
-    __FIXTURES__.forLength();
     UnitJS.install('$');
+  });
+
+  beforeEach(() => {
+    __FIXTURES__.common();
   });
 
   it('should return 0 if no elements were selected', () => {

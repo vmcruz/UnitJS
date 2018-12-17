@@ -4,6 +4,7 @@ module.exports = (config) => {
     files: [
       './build/unit.min.js',
       './test/helper/fixtures.js',
+      './test/helper/requiredError.js',
       './test/*.spec.js',
     ],
     reporters: ['spec'],
@@ -12,8 +13,8 @@ module.exports = (config) => {
     specReporter: {
       supressErrorSummary: false,
       supressFailed: false,
-      supressPassed: false,
-      supressSkipped: false,
+      supressPassed: true,
+      supressSkipped: true,
       showSpecTiming: true,
       failTest: true,
     },

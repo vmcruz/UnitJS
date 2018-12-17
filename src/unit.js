@@ -21,17 +21,13 @@ SOFTWARE.
 */
 
 window.UnitJS = (function UnitJSSingleton(global) {
-  const eventList = Object.keys(global).filter(e => e.match(/^on/));
+  const eventList = Object.keys(global).filter(e => e.match(/^on/)).map(e => e.replace('on', ''));
 
   function required(paramName, paramType) {
-    throw new Error(`expects ${paramName} param to be [ ${paramType} ]`);
+    throw new Error(`expected ${paramName} param to be [ ${paramType} ]`);
   }
 
   function camelFromKebab(word) {
-    if (!Array.isArray(word)) {
-      throw new TypeError(`${word} is not a valid Array`);
-    }
-
     const fixedArray = word.split('-').map(e => e.charAt(0).toUpperCase() + e.slice(1).toLowerCase());
     fixedArray[0] = fixedArray[0].toLowerCase();
     return fixedArray.join('');
@@ -43,16 +39,18 @@ window.UnitJS = (function UnitJSSingleton(global) {
 
       selectors.forEach((selector) => {
         if (typeof selector === 'string') {
-          const nodes = document.querySelectorAll(selector);
-          this.nodes.push(...nodes);
+          try {
+            const nodes = document.querySelectorAll(selector);
+            this.nodes.push(...nodes);
+          } catch (e) {
+            throw new SyntaxError(`${selector} is not a valid DOM selector`);
+          }
         } else if (selector instanceof HTMLElement) {
           this.nodes.push(selector);
         } else {
-          throw new TypeError(`${selector} is not a valid selector nor a HTMLElement`);
+          throw new TypeError(`${selector} is not a String selector nor a HTMLElement`);
         }
       });
-
-      return this;
     }
 
     get length() {
@@ -74,15 +72,8 @@ window.UnitJS = (function UnitJSSingleton(global) {
     }
 
     toggleClass(className = required('ClassName', 'String')) {
-      if (typeof className === 'string') {
-        this.nodes.forEach((node) => {
-          if (node.classList.contains(className)) {
-            node.classList.remove(className);
-          } else {
-            node.classList.add(className);
-          }
-        });
-
+      if (typeof className === 'string' && className) {
+        this.nodes.forEach(node => node.classList.toggle(className));
         return this;
       }
 
@@ -91,14 +82,11 @@ window.UnitJS = (function UnitJSSingleton(global) {
 
     on(event = required('Event', 'String'), ...fns) {
       if (typeof event === 'string' && eventList.includes(event)) {
+        const areFunctions = fns.every(fn => typeof fn === 'function');
+        if (!areFunctions) throw new TypeError('Second or further params are not valid functions');
+
         this.nodes.forEach((node) => {
-          fns.forEach((fn) => {
-            if (typeof fn === 'function') {
-              node.addEventListener(event, fn, false);
-            } else {
-              throw new TypeError(`${fn} is not a valid function`);
-            }
-          });
+          fns.forEach(fn => node.addEventListener(event, fn, false));
         });
 
         return this;
@@ -108,27 +96,27 @@ window.UnitJS = (function UnitJSSingleton(global) {
     }
 
     css(property = required('Property', 'String'), value = false) {
-      if (typeof property === 'string') {
+      if (typeof property === 'string' && property) {
         if (value) {
           if (typeof value === 'string') {
             this.nodes.forEach((node) => {
-              node.style[property] = value;
+              node.style[camelFromKebab(property)] = value;
             });
 
             return this;
           }
 
-          throw new TypeError(`${value} is not a valid string css value`);
+          throw new TypeError(`${value} is not a string value`);
         }
 
         return this.nodes[0].style[property];
       }
 
-      throw new TypeError(`${property} is not a valid string css property`);
+      throw new TypeError(`${property} is not a string property`);
     }
 
     addClass(className = required('ClassName', 'String')) {
-      if (typeof className === 'string') {
+      if (typeof className === 'string' && className) {
         this.nodes.forEach((node) => {
           node.classList.add(className);
         });
@@ -136,19 +124,11 @@ window.UnitJS = (function UnitJSSingleton(global) {
         return this;
       }
 
-      throw new TypeError(`${className} is not a valid string className`);
-    }
-
-    hasClass(className = required('ClassName', 'String')) {
-      if (typeof className === 'string') {
-        return this.nodes[0].classList.contains(className);
-      }
-
-      throw new TypeError(`${className} is not a valid string className`);
+      throw new TypeError(`${className} is not a string className`);
     }
 
     removeClass(className = required('ClassName', 'String')) {
-      if (typeof className === 'string') {
+      if (typeof className === 'string' && className) {
         this.nodes.forEach((node) => {
           node.classList.remove(className);
         });
@@ -156,20 +136,26 @@ window.UnitJS = (function UnitJSSingleton(global) {
         return this;
       }
 
-      throw new TypeError(`${className} is not a valid string classname`);
+      throw new TypeError(`${className} is not a string className`);
+    }
+
+    haveClass(className = required('ClassName', 'String')) {
+      if (typeof className === 'string' && className) {
+        return this.nodes.every(node => node.classList.contains(className));
+      }
+
+      throw new TypeError(`${className} is not a string className`);
     }
 
     html(html = false, append = false) {
+      if (html === false) return this.nodes[0].innerHTML;
+
       if (typeof html !== 'string' && !(html instanceof HTMLElement)) {
-        throw new TypeError(`${html} is not a valid string markup`);
-      } else if (html === false) {
-        return this.nodes[0].innerHTML;
+        throw new TypeError(`${html} is not a string nor a HTMLElement`);
       }
 
       let strHtml = html;
-      if (html instanceof HTMLElement) {
-        strHtml = html.innerHTML;
-      }
+      if (html instanceof HTMLElement) strHtml = html.innerHTML;
 
       this.nodes.forEach((node) => {
         if (append) {
@@ -183,10 +169,8 @@ window.UnitJS = (function UnitJSSingleton(global) {
     }
 
     data(dataProperty = required('Data', 'String'), value = false) {
-      if (typeof dataProperty === 'string') {
-        if (value === false) {
-          return this.nodes[0].dataset[dataProperty];
-        }
+      if (typeof dataProperty === 'string' && dataProperty) {
+        if (value === false) return this.nodes[0].dataset[dataProperty];
 
         const dataPropertyCamel = camelFromKebab(dataProperty);
         this.nodes.forEach((node) => {
@@ -196,12 +180,12 @@ window.UnitJS = (function UnitJSSingleton(global) {
         return this;
       }
 
-      throw new TypeError(`${dataProperty} is not a valid string dataname`);
+      throw new TypeError(`${dataProperty} is not a string data property`);
     }
 
     text(text = false) {
       if (typeof text !== 'string' && text !== false) {
-        throw new TypeError(`${text} is not a valid string text`);
+        throw new TypeError(`${text} is not a string`);
       }
 
       if (typeof text === 'string') {
@@ -216,7 +200,7 @@ window.UnitJS = (function UnitJSSingleton(global) {
     }
 
     attr(attribute = required('Attribute', 'String'), value = false) {
-      if (typeof attribute === 'string') {
+      if (typeof attribute === 'string' && attribute) {
         if (value === false) {
           if (this.nodes[0].hasAttribute(attribute)) {
             return this.nodes[0].getAttribute(attribute);
@@ -232,17 +216,27 @@ window.UnitJS = (function UnitJSSingleton(global) {
         return this;
       }
 
-      throw new TypeError(`${attribute} is not a valid string attribute`);
+      throw new TypeError(`${attribute} is not a string attribute`);
     }
 
-    first() { return this.nodes[0]; }
+    first() {
+      if (!this.nodes.length) return false;
+      return this.nodes[0];
+    }
 
-    firstChild() { return this.nodes[0].firstChild; }
+    firstChild() {
+      if (!this.nodes.length) return false;
+      return this.nodes[0].firstChild;
+    }
 
     remove(element = required('Element', 'HTMLElement')) {
       if (element instanceof HTMLElement) {
         this.nodes.forEach((node) => {
-          node.removeChild(element);
+          try {
+            node.removeChild(element);
+          } catch (e) {
+            throw new SyntaxError(`${element} is not a child of this node`);
+          }
         });
 
         return this;
@@ -251,7 +245,10 @@ window.UnitJS = (function UnitJSSingleton(global) {
       throw new TypeError(`${element} is not a valid node`);
     }
 
-    parent() { return this.nodes[0].parentNode; }
+    parent() {
+      if (!this.nodes.length) return false;
+      return this.nodes[0].parentNode;
+    }
 
     append(element = required('Element', 'HTMLElement/String')) {
       if (element instanceof HTMLElement || typeof element === 'string') {
