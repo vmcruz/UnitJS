@@ -5,7 +5,7 @@
   "main": "unit.js",
   "scripts": {
     "test:grep": "./node_modules/.bin/karma start --browsers ChromeHeadless karma.conf.js --",
-    "test": "npm run test:grep -- ./test/*.spec.js",
+    "test": "npm run test:grep -- ./test/**/*.spec.js",
     "lint": "./node_modules/.bin/eslint ./src/unit.js",
     "build": "./node_modules/.bin/google-closure-compiler --js='src/*.js' --js_output_file build/unit.min.js --create_source_map build/unit.js.map",
     "test:build": "./node_modules/.bin/karma start --browsers ChromeHeadless karma-build.conf.js"
