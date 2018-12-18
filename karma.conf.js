@@ -21,10 +21,10 @@ module.exports = (config) => {
       ]
     },
     specReporter: {
-      supressErrorSummary: false,
-      supressFailed: false,
-      supressPassed: false,
-      supressSkipped: false,
+      suppressErrorSummary: false,
+      suppressFailed: false,
+      suppressPassed: false,
+      suppressSkipped: false,
       showSpecTiming: true,
       failTest: true,
     },

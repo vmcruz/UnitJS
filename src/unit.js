@@ -250,7 +250,7 @@ window.UnitJS = (function UnitJSSingleton(global) {
       return this.nodes[0].parentNode;
     }
 
-    append(element = required('Element', 'HTMLElement/String')) {
+    append(element = required('Element', 'HTMLElement | String')) {
       if (element instanceof HTMLElement || typeof element === 'string') {
         let htmlElement = element;
         if (typeof element === 'string') {
@@ -259,6 +259,23 @@ window.UnitJS = (function UnitJSSingleton(global) {
 
         this.nodes.forEach((node) => {
           node.appendChild(htmlElement);
+        });
+
+        return this;
+      }
+
+      throw new TypeError(`${element} is not a valid node`);
+    }
+
+    prepend(element = required('Element', 'HTMLElement | String')) {
+      if (element instanceof HTMLElement || typeof element === 'string') {
+        let htmlElement = element;
+        if (typeof element === 'string') {
+          htmlElement = document.createTextNode(element);
+        }
+
+        this.nodes.forEach((node) => {
+          node.insertBefore(htmlElement, node.firstChild);
         });
 
         return this;

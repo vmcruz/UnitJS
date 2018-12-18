@@ -20,5 +20,16 @@ const __FIXTURES__ = {
     div.classList.add('test-div');
     div.innerHTML = '<p>Test inner HTML in UnitJS</p>'
     document.body.appendChild(div);
-  }
+  },
+  xpend: () => { // append & prepend tests
+    document.body.innerHTML = `
+      <div class="test-div"><p>Test [ap|pre]pend in UnitJS</p></div>
+    `;
+  },
+  value: () => {
+    document.body.innerHTML = `
+      <input type="text" class="test-input" value="This is a test value" />
+      <input type="text" class="test-input" value="This is a second test value" />
+    `;
+  },
 };
