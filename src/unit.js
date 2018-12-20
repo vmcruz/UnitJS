@@ -352,7 +352,7 @@ window.UnitJS = (function UnitJSSingleton(global) {
       days: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
     };
 
-    $$.date = (format = required('DateFormat', 'String'), timestamp = (new Date()).getTime()) => {
+    $$.date = (format = required('DateFormat', 'String'), timestamp = (new Date()).getTime(), offset = 0) => {
       if (typeof format === 'string' && format) {
         if (typeof timestamp !== 'number') {
           throw new TypeError(`${timestamp} is not a valid number timestamp`);
@@ -367,20 +367,20 @@ window.UnitJS = (function UnitJSSingleton(global) {
         }
 
         const validFormat = {};
-        const dateObject = new Date(timestamp);
+        const dateObject = new Date(timestamp + (offset * 60 * 60 * 1000));
 
-        validFormat.d = $$.lpad(dateObject.getDate().toString(), '0', 2);
-        validFormat.j = dateObject.getDate();
-        validFormat.w = dateObject.getDay();
+        validFormat.d = $$.lpad(dateObject.getUTCDate().toString(), '0', 2);
+        validFormat.j = dateObject.getUTCDate();
+        validFormat.w = dateObject.getUTCDay();
         validFormat.N = validFormat.w === 0 ? 7 : validFormat.w;
-        validFormat.m = $$.lpad((dateObject.getMonth() + 1).toString(), '0', 2);
-        validFormat.n = dateObject.getMonth() + 1;
-        validFormat.Y = dateObject.getFullYear();
+        validFormat.m = $$.lpad((dateObject.getUTCMonth() + 1).toString(), '0', 2);
+        validFormat.n = dateObject.getUTCMonth() + 1;
+        validFormat.Y = dateObject.getUTCFullYear();
         validFormat.y = validFormat.Y.toString().substr(-2);
 
         validFormat.a = 'am';
         validFormat.A = 'AM';
-        validFormat.G = dateObject.getHours();
+        validFormat.G = dateObject.getUTCHours();
         validFormat.H = $$.lpad(validFormat.G.toString(), '0', 2);
         validFormat.g = validFormat.G === 0 ? 12 : validFormat.G;
 
@@ -391,11 +391,11 @@ window.UnitJS = (function UnitJSSingleton(global) {
         }
 
         validFormat.h = $$.lpad(validFormat.g.toString(), '0', 2);
-        validFormat.i = $$.lpad(dateObject.getMinutes().toString(), '0', 2);
-        validFormat.s = $$.lpad(dateObject.getSeconds().toString(), '0', 2);
+        validFormat.i = $$.lpad(dateObject.getUTCMinutes().toString(), '0', 2);
+        validFormat.s = $$.lpad(dateObject.getUTCSeconds().toString(), '0', 2);
         validFormat.v = dateObject.getMilliseconds();
 
-        validFormat.l = $$.i18n.days[dateObject.getDay()];
+        validFormat.l = $$.i18n.days[validFormat.w];
         validFormat.D = validFormat.l.substring(0, 3);
         validFormat.F = $$.i18n.months[dateObject.getMonth()];
         validFormat.M = validFormat.F.substring(0, 3);

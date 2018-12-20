@@ -1,8 +1,6 @@
 version: 2
 jobs:
   build:
-    environment:
-      TZ: "/usr/share/zoneinfo/America/Mexico_City"
     docker:
       - image: circleci/node:chakracore-10.6.0-browsers
     working_directory: ~/UnitJS
