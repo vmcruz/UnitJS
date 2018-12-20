@@ -419,7 +419,7 @@ window.UnitJS = (function UnitJSSingleton(global) {
   }
 
   eventList.forEach((event) => {
-    UNIT.prototype[event] = function(fn) {
+    UNIT.prototype[event] = function AddEventListenerEvent(fn) {
       if (typeof fn === 'function') {
         this.on(event, fn);
       } else {
