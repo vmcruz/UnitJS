@@ -1,8 +1,11 @@
 version: 2
 jobs:
+  machine:
+    timezone:
+      America/Mexico_City
   build:
     docker:
-      - image: circleci/node:chakracore-10.6.0-browsers
+      - image: circleci/node:6.15-browsers-legacy
     working_directory: ~/UnitJS
     environment:
       TZ: "/usr/share/zoneinfo/America/Mexico_City"
