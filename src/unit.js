@@ -45,7 +45,7 @@ window.UnitJS = (function UnitJSSingleton(global) {
           } catch (e) {
             throw new SyntaxError(`${selector} is not a valid DOM selector`);
           }
-        } else if (selector instanceof HTMLElement) {
+        } else if (selector instanceof HTMLElement || selector instanceof HTMLDocument) {
           this.nodes.push(selector);
         } else {
           throw new TypeError(`${selector} is not a String selector nor a HTMLElement`);
@@ -295,62 +295,75 @@ window.UnitJS = (function UnitJSSingleton(global) {
 
       return this.nodes[0].value;
     }
+
+    ready(fn = required('Function', 'Function')) {
+      if (typeof fn === 'function') {
+        this.nodes.forEach((node) => {
+          node.addEventListener('load', fn, false);
+        });
+        return this;
+      }
+
+      throw new TypeError(`${fn} is not a valid function`);
+    }
   }
 
   function install(globalVariable) {
     const $$ = (...selectors) => new UNIT(selectors);
 
-    $$.ready = (fn = required('Function', 'Function')) => {
-      if (typeof fn === 'function') {
-        document.addEventListener('DOMContentLoaded', fn, false);
-      } else {
-        throw new TypeError(`${fn} is not a valid function`);
+    $$.create = (element = required('Element', 'String')) => {
+      if (typeof element === 'string' && element) {
+        return document.createElement(element);
       }
+
+      return false;
     };
 
-    $$.create = (element = required('ElementName', 'String')) => document.createElement(element);
+    $$.jump = (url = required('Url', 'String')) => {
+      if (typeof url === 'string' && url) {
+        global.location = url;
+        return global.location;
+      }
 
-    $$.jump = (page = required('Page', 'String')) => {
-      global.location.href = page;
-      return global.location;
+      return false;
     };
 
-    $$.reload = () => global.location.reload();
-
-    $$.pad = (str = required('ParamString', 'String'), padStr = required('StringPad', 'String'), length = required('Length', 'Number'), lpad = false) => {
+    function pad(str, padStr, length, lpad = false) {
       let paddedString = str;
-      for (let j = str.length; j < length; j += 1) {
-        if (lpad !== false) {
-          paddedString = padStr + paddedString;
-        } else {
-          paddedString += padStr;
+      if (paddedString) {
+        for (let j = str.length; j < length; j += 1) {
+          if (lpad !== false) {
+            paddedString = padStr + paddedString;
+          } else {
+            paddedString += padStr;
+          }
         }
       }
 
       return paddedString;
     };
 
-    $$.lpad = (str = required('ParamString', 'String'), padStr = '0', length = 2) => $$.pad(str, padStr, length, true);
+    $$.lpad = (str = required('ParamString', 'String'), padStr = '0', length = 2) => pad(str, padStr, length, true);
 
-    $$.rpad = (str = required('ParamString', 'String'), padStr = '0', length = 2) => $$.pad(str, padStr, length);
+    $$.rpad = (str = required('ParamString', 'String'), padStr = '0', length = 2) => pad(str, padStr, length);
 
     $$.i18n = {
       months: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
       days: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
     };
 
-    $$.dateformat = (format = required('DateFormat', 'String'), timestamp = (new Date()).getTime()) => {
-      if (typeof format === 'string') {
-        if (Number.isNaN(timestamp)) {
+    $$.date = (format = required('DateFormat', 'String'), timestamp = (new Date()).getTime()) => {
+      if (typeof format === 'string' && format) {
+        if (typeof timestamp !== 'number') {
           throw new TypeError(`${timestamp} is not a valid number timestamp`);
         }
 
         if (!Array.isArray($$.i18n.months) || $$.i18n.months.length !== 12) {
-          throw new TypeError(`${$$.i18n.months} is not a valid array of months. Use $$.i18n.months to set it.`);
+          throw new TypeError(`${globalVariable}.i18n.months is not a valid array of months. Use ${globalVariable}.i18n.months to set it.`);
         }
 
         if (!Array.isArray($$.i18n.days) || $$.i18n.days.length !== 7) {
-          throw new TypeError(`${$$.i18n.days} is not a valid array of week days. Use $$.i18n.days to set it.`);
+          throw new TypeError(`${globalVariable}.i18n.days is not a valid array of week days. Use ${globalVariable}.i18n.days to set it.`);
         }
 
         const validFormat = {};
@@ -363,7 +376,7 @@ window.UnitJS = (function UnitJSSingleton(global) {
         validFormat.m = $$.lpad((dateObject.getMonth() + 1).toString(), '0', 2);
         validFormat.n = dateObject.getMonth() + 1;
         validFormat.Y = dateObject.getFullYear();
-        validFormat.y = validFormat.Y.toString().substring(-2);
+        validFormat.y = validFormat.Y.toString().substr(-2);
 
         validFormat.a = 'am';
         validFormat.A = 'AM';
@@ -389,9 +402,7 @@ window.UnitJS = (function UnitJSSingleton(global) {
 
         let fixedFormat = '';
         [...format].forEach((sym) => {
-          fixedFormat += {}
-            .prototype
-            .hasOwnProperty.call(validFormat, sym) ? validFormat[sym] : sym;
+          fixedFormat += validFormat.hasOwnProperty(sym) ? validFormat[sym] : sym;
         });
 
         return fixedFormat;

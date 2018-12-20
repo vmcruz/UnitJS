@@ -1,4 +1,4 @@
-describe('UnitJS.on', () => {
+describe('UnitJS.prototype.on', () => {
   beforeAll(() => {
     UnitJS.install('$');
   });

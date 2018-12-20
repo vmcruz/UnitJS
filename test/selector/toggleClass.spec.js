@@ -1,4 +1,4 @@
-describe('UnitJS.toggleClass', () => {
+describe('UnitJS.prototype.toggleClass', () => {
   beforeAll(() => {
     UnitJS.install('$');
   });

@@ -1,4 +1,4 @@
-describe('UnitJS.removeClass', () => {
+describe('UnitJS.prototype.removeClass', () => {
   beforeAll(() => {
     UnitJS.install('$');
   });

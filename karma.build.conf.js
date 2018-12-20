@@ -5,7 +5,7 @@ module.exports = (config) => {
       './build/unit.min.js',
       './test/helper/fixtures.js',
       './test/helper/requiredError.js',
-      './test/*.spec.js',
+      './test/**/*.spec.js',
     ],
     reporters: ['spec'],
     colors: true,
