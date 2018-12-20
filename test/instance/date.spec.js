@@ -77,10 +77,24 @@ describe('UnitJS.date', () => {
     }).toThrow(new TypeError(`${globalVariable}.i18n.days is not a valid array of week days. Use ${globalVariable}.i18n.days to set it.`));
   });
 
-  it('should return the correct value for each format value', () => {
+  it('should return the correct value for each format value with timestamp in milliseconds 1544002524124', () => {
     expect(
       $.date('d j w N m n Y y a A G g H h i s v l D F M', 1544002524124)
     )
-      .toBe('05 5 3 4 12 12 2018 18 am AM 3 3 03 03 35 24 124 Wednesday Wed December Dec');
+      .toBe('05 5 3 3 12 12 2018 18 am AM 3 3 03 03 35 24 124 Wednesday Wed December Dec');
+  });
+
+  it('should return the correct value for each format value with timestamp in milliseconds 1439489120127', () => {
+    expect(
+      $.date('d j w N m n Y y a A G g H h i s v l D F M', 1439489120127)
+    )
+      .toBe('13 13 4 4 08 8 2015 15 pm PM 13 1 13 01 05 20 127 Thursday Thu August Aug');
+  });
+
+  it('should return the correct value for each format value with timestamp in milliseconds 1544940000000', () => {
+    expect(
+      $.date('d j w N m n Y y a A G g H h i s v l D F M', 1544940000000)
+    )
+      .toBe('16 16 0 7 12 12 2018 18 am AM 0 12 00 12 00 00 0 Sunday Sun December Dec');
   });
 });

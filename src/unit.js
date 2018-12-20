@@ -341,7 +341,7 @@ window.UnitJS = (function UnitJSSingleton(global) {
       }
 
       return paddedString;
-    };
+    }
 
     $$.lpad = (str = required('ParamString', 'String'), padStr = '0', length = 2) => pad(str, padStr, length, true);
 
@@ -372,7 +372,7 @@ window.UnitJS = (function UnitJSSingleton(global) {
         validFormat.d = $$.lpad(dateObject.getDate().toString(), '0', 2);
         validFormat.j = dateObject.getDate();
         validFormat.w = dateObject.getDay();
-        validFormat.N = validFormat.w + 1;
+        validFormat.N = validFormat.w === 0 ? 7 : validFormat.w;
         validFormat.m = $$.lpad((dateObject.getMonth() + 1).toString(), '0', 2);
         validFormat.n = dateObject.getMonth() + 1;
         validFormat.Y = dateObject.getFullYear();
@@ -382,12 +382,12 @@ window.UnitJS = (function UnitJSSingleton(global) {
         validFormat.A = 'AM';
         validFormat.G = dateObject.getHours();
         validFormat.H = $$.lpad(validFormat.G.toString(), '0', 2);
-        validFormat.g = dateObject.getHours() === 0 ? 12 : dateObject.getHours();
+        validFormat.g = validFormat.G === 0 ? 12 : validFormat.G;
 
-        if (dateObject.getHours() > 12) {
+        if (validFormat.G > 12) {
           validFormat.a = 'pm';
           validFormat.A = 'PM';
-          validFormat.g = dateObject.getHours() === 0 ? 12 : dateObject.getHours() - 12;
+          validFormat.g = validFormat.G - 12;
         }
 
         validFormat.h = $$.lpad(validFormat.g.toString(), '0', 2);
@@ -402,7 +402,9 @@ window.UnitJS = (function UnitJSSingleton(global) {
 
         let fixedFormat = '';
         [...format].forEach((sym) => {
-          fixedFormat += validFormat.hasOwnProperty(sym) ? validFormat[sym] : sym;
+          fixedFormat += Object
+            .prototype
+            .hasOwnProperty.call(validFormat, sym) ? validFormat[sym] : sym;
         });
 
         return fixedFormat;
@@ -417,7 +419,7 @@ window.UnitJS = (function UnitJSSingleton(global) {
   }
 
   eventList.forEach((event) => {
-    UNIT.prototype[event] = (fn) => {
+    UNIT.prototype[event] = function(fn) {
       if (typeof fn === 'function') {
         this.on(event, fn);
       } else {
