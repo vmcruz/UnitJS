@@ -4,7 +4,8 @@ module.exports = (config) => {
     files: [
       './src/unit.js',
       './test/helper/fixtures.js',
-      './test/*.spec.js',
+      './test/helper/requiredError.js',
+      ...grep(process.argv)
     ],
     reporters: ['spec', 'coverage'],
     colors: true,
@@ -20,14 +21,22 @@ module.exports = (config) => {
       ]
     },
     specReporter: {
-      supressErrorSummary: false,
-      supressFailed: false,
-      supressPassed: false,
-      supressSkipped: false,
+      suppressErrorSummary: false,
+      suppressFailed: false,
+      suppressPassed: false,
+      suppressSkipped: false,
       showSpecTiming: true,
       failTest: true,
     },
     logLevel: config.LOG_INFO,
     singleRun: true,
+  });
+};
+
+function grep(argv) {
+  let found = false;
+  return argv.filter((a) => {
+    if (found) return a;
+    if (a === '--') found = true;
   });
 }

@@ -21,17 +21,13 @@ SOFTWARE.
 */
 
 window.UnitJS = (function UnitJSSingleton(global) {
-  const eventList = Object.keys(global).filter(e => e.match(/^on/));
+  const eventList = Object.keys(global).filter(e => e.match(/^on/)).map(e => e.replace('on', ''));
 
   function required(paramName, paramType) {
-    throw new Error(`expects ${paramName} param to be [ ${paramType} ]`);
+    throw new Error(`expected ${paramName} param to be [ ${paramType} ]`);
   }
 
   function camelFromKebab(word) {
-    if (!Array.isArray(word)) {
-      throw new TypeError(`${word} is not a valid Array`);
-    }
-
     const fixedArray = word.split('-').map(e => e.charAt(0).toUpperCase() + e.slice(1).toLowerCase());
     fixedArray[0] = fixedArray[0].toLowerCase();
     return fixedArray.join('');
@@ -43,16 +39,18 @@ window.UnitJS = (function UnitJSSingleton(global) {
 
       selectors.forEach((selector) => {
         if (typeof selector === 'string') {
-          const nodes = document.querySelectorAll(selector);
-          this.nodes.push(...nodes);
-        } else if (selector instanceof HTMLElement) {
+          try {
+            const nodes = document.querySelectorAll(selector);
+            this.nodes.push(...nodes);
+          } catch (e) {
+            throw new SyntaxError(`${selector} is not a valid DOM selector`);
+          }
+        } else if (selector instanceof HTMLElement || selector instanceof HTMLDocument) {
           this.nodes.push(selector);
         } else {
-          throw new TypeError(`${selector} is not a valid selector nor a HTMLElement`);
+          throw new TypeError(`${selector} is not a String selector nor a HTMLElement`);
         }
       });
-
-      return this;
     }
 
     get length() {
@@ -74,15 +72,8 @@ window.UnitJS = (function UnitJSSingleton(global) {
     }
 
     toggleClass(className = required('ClassName', 'String')) {
-      if (typeof className === 'string') {
-        this.nodes.forEach((node) => {
-          if (node.classList.contains(className)) {
-            node.classList.remove(className);
-          } else {
-            node.classList.add(className);
-          }
-        });
-
+      if (typeof className === 'string' && className) {
+        this.nodes.forEach(node => node.classList.toggle(className));
         return this;
       }
 
@@ -91,14 +82,11 @@ window.UnitJS = (function UnitJSSingleton(global) {
 
     on(event = required('Event', 'String'), ...fns) {
       if (typeof event === 'string' && eventList.includes(event)) {
+        const areFunctions = fns.every(fn => typeof fn === 'function');
+        if (!areFunctions) throw new TypeError('Second or further params are not valid functions');
+
         this.nodes.forEach((node) => {
-          fns.forEach((fn) => {
-            if (typeof fn === 'function') {
-              node.addEventListener(event, fn, false);
-            } else {
-              throw new TypeError(`${fn} is not a valid function`);
-            }
-          });
+          fns.forEach(fn => node.addEventListener(event, fn, false));
         });
 
         return this;
@@ -108,27 +96,27 @@ window.UnitJS = (function UnitJSSingleton(global) {
     }
 
     css(property = required('Property', 'String'), value = false) {
-      if (typeof property === 'string') {
+      if (typeof property === 'string' && property) {
         if (value) {
           if (typeof value === 'string') {
             this.nodes.forEach((node) => {
-              node.style[property] = value;
+              node.style[camelFromKebab(property)] = value;
             });
 
             return this;
           }
 
-          throw new TypeError(`${value} is not a valid string css value`);
+          throw new TypeError(`${value} is not a string value`);
         }
 
         return this.nodes[0].style[property];
       }
 
-      throw new TypeError(`${property} is not a valid string css property`);
+      throw new TypeError(`${property} is not a string property`);
     }
 
     addClass(className = required('ClassName', 'String')) {
-      if (typeof className === 'string') {
+      if (typeof className === 'string' && className) {
         this.nodes.forEach((node) => {
           node.classList.add(className);
         });
@@ -136,19 +124,11 @@ window.UnitJS = (function UnitJSSingleton(global) {
         return this;
       }
 
-      throw new TypeError(`${className} is not a valid string className`);
-    }
-
-    hasClass(className = required('ClassName', 'String')) {
-      if (typeof className === 'string') {
-        return this.nodes[0].classList.contains(className);
-      }
-
-      throw new TypeError(`${className} is not a valid string className`);
+      throw new TypeError(`${className} is not a string className`);
     }
 
     removeClass(className = required('ClassName', 'String')) {
-      if (typeof className === 'string') {
+      if (typeof className === 'string' && className) {
         this.nodes.forEach((node) => {
           node.classList.remove(className);
         });
@@ -156,20 +136,26 @@ window.UnitJS = (function UnitJSSingleton(global) {
         return this;
       }
 
-      throw new TypeError(`${className} is not a valid string classname`);
+      throw new TypeError(`${className} is not a string className`);
+    }
+
+    haveClass(className = required('ClassName', 'String')) {
+      if (typeof className === 'string' && className) {
+        return this.nodes.every(node => node.classList.contains(className));
+      }
+
+      throw new TypeError(`${className} is not a string className`);
     }
 
     html(html = false, append = false) {
+      if (html === false) return this.nodes[0].innerHTML;
+
       if (typeof html !== 'string' && !(html instanceof HTMLElement)) {
-        throw new TypeError(`${html} is not a valid string markup`);
-      } else if (html === false) {
-        return this.nodes[0].innerHTML;
+        throw new TypeError(`${html} is not a string nor a HTMLElement`);
       }
 
       let strHtml = html;
-      if (html instanceof HTMLElement) {
-        strHtml = html.innerHTML;
-      }
+      if (html instanceof HTMLElement) strHtml = html.innerHTML;
 
       this.nodes.forEach((node) => {
         if (append) {
@@ -183,10 +169,8 @@ window.UnitJS = (function UnitJSSingleton(global) {
     }
 
     data(dataProperty = required('Data', 'String'), value = false) {
-      if (typeof dataProperty === 'string') {
-        if (value === false) {
-          return this.nodes[0].dataset[dataProperty];
-        }
+      if (typeof dataProperty === 'string' && dataProperty) {
+        if (value === false) return this.nodes[0].dataset[dataProperty];
 
         const dataPropertyCamel = camelFromKebab(dataProperty);
         this.nodes.forEach((node) => {
@@ -196,12 +180,12 @@ window.UnitJS = (function UnitJSSingleton(global) {
         return this;
       }
 
-      throw new TypeError(`${dataProperty} is not a valid string dataname`);
+      throw new TypeError(`${dataProperty} is not a string data property`);
     }
 
     text(text = false) {
       if (typeof text !== 'string' && text !== false) {
-        throw new TypeError(`${text} is not a valid string text`);
+        throw new TypeError(`${text} is not a string`);
       }
 
       if (typeof text === 'string') {
@@ -216,7 +200,7 @@ window.UnitJS = (function UnitJSSingleton(global) {
     }
 
     attr(attribute = required('Attribute', 'String'), value = false) {
-      if (typeof attribute === 'string') {
+      if (typeof attribute === 'string' && attribute) {
         if (value === false) {
           if (this.nodes[0].hasAttribute(attribute)) {
             return this.nodes[0].getAttribute(attribute);
@@ -232,17 +216,27 @@ window.UnitJS = (function UnitJSSingleton(global) {
         return this;
       }
 
-      throw new TypeError(`${attribute} is not a valid string attribute`);
+      throw new TypeError(`${attribute} is not a string attribute`);
     }
 
-    first() { return this.nodes[0]; }
+    first() {
+      if (!this.nodes.length) return false;
+      return this.nodes[0];
+    }
 
-    firstChild() { return this.nodes[0].firstChild; }
+    firstChild() {
+      if (!this.nodes.length) return false;
+      return this.nodes[0].firstChild;
+    }
 
     remove(element = required('Element', 'HTMLElement')) {
       if (element instanceof HTMLElement) {
         this.nodes.forEach((node) => {
-          node.removeChild(element);
+          try {
+            node.removeChild(element);
+          } catch (e) {
+            throw new SyntaxError(`${element} is not a child of this node`);
+          }
         });
 
         return this;
@@ -251,9 +245,12 @@ window.UnitJS = (function UnitJSSingleton(global) {
       throw new TypeError(`${element} is not a valid node`);
     }
 
-    parent() { return this.nodes[0].parentNode; }
+    parent() {
+      if (!this.nodes.length) return false;
+      return this.nodes[0].parentNode;
+    }
 
-    append(element = required('Element', 'HTMLElement/String')) {
+    append(element = required('Element', 'HTMLElement | String')) {
       if (element instanceof HTMLElement || typeof element === 'string') {
         let htmlElement = element;
         if (typeof element === 'string') {
@@ -262,6 +259,23 @@ window.UnitJS = (function UnitJSSingleton(global) {
 
         this.nodes.forEach((node) => {
           node.appendChild(htmlElement);
+        });
+
+        return this;
+      }
+
+      throw new TypeError(`${element} is not a valid node`);
+    }
+
+    prepend(element = required('Element', 'HTMLElement | String')) {
+      if (element instanceof HTMLElement || typeof element === 'string') {
+        let htmlElement = element;
+        if (typeof element === 'string') {
+          htmlElement = document.createTextNode(element);
+        }
+
+        this.nodes.forEach((node) => {
+          node.insertBefore(htmlElement, node.firstChild);
         });
 
         return this;
@@ -281,101 +295,114 @@ window.UnitJS = (function UnitJSSingleton(global) {
 
       return this.nodes[0].value;
     }
+
+    ready(fn = required('Function', 'Function')) {
+      if (typeof fn === 'function') {
+        this.nodes.forEach((node) => {
+          node.addEventListener('load', fn, false);
+        });
+        return this;
+      }
+
+      throw new TypeError(`${fn} is not a valid function`);
+    }
   }
 
   function install(globalVariable) {
     const $$ = (...selectors) => new UNIT(selectors);
 
-    $$.ready = (fn = required('Function', 'Function')) => {
-      if (typeof fn === 'function') {
-        document.addEventListener('DOMContentLoaded', fn, false);
-      } else {
-        throw new TypeError(`${fn} is not a valid function`);
+    $$.create = (element = required('Element', 'String')) => {
+      if (typeof element === 'string' && element) {
+        return document.createElement(element);
       }
+
+      return false;
     };
 
-    $$.create = (element = required('ElementName', 'String')) => document.createElement(element);
+    $$.jump = (url = required('Url', 'String')) => {
+      if (typeof url === 'string' && url) {
+        global.location = url;
+        return global.location;
+      }
 
-    $$.jump = (page = required('Page', 'String')) => {
-      global.location.href = page;
-      return global.location;
+      return false;
     };
 
-    $$.reload = () => global.location.reload();
-
-    $$.pad = (str = required('ParamString', 'String'), padStr = required('StringPad', 'String'), length = required('Length', 'Number'), lpad = false) => {
+    function pad(str, padStr, length, lpad = false) {
       let paddedString = str;
-      for (let j = str.length; j < length; j += 1) {
-        if (lpad !== false) {
-          paddedString = padStr + paddedString;
-        } else {
-          paddedString += padStr;
+      if (paddedString) {
+        for (let j = str.length; j < length; j += 1) {
+          if (lpad !== false) {
+            paddedString = padStr + paddedString;
+          } else {
+            paddedString += padStr;
+          }
         }
       }
 
       return paddedString;
-    };
+    }
 
-    $$.lpad = (str = required('ParamString', 'String'), padStr = '0', length = 2) => $$.pad(str, padStr, length, true);
+    $$.lpad = (str = required('ParamString', 'String'), padStr = '0', length = 2) => pad(str, padStr, length, true);
 
-    $$.rpad = (str = required('ParamString', 'String'), padStr = '0', length = 2) => $$.pad(str, padStr, length);
+    $$.rpad = (str = required('ParamString', 'String'), padStr = '0', length = 2) => pad(str, padStr, length);
 
     $$.i18n = {
       months: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
       days: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
     };
 
-    $$.dateformat = (format = required('DateFormat', 'String'), timestamp = (new Date()).getTime()) => {
-      if (typeof format === 'string') {
-        if (Number.isNaN(timestamp)) {
+    $$.date = (format = required('DateFormat', 'String'), timestamp = (new Date()).getTime(), offset = 0) => {
+      if (typeof format === 'string' && format) {
+        if (typeof timestamp !== 'number') {
           throw new TypeError(`${timestamp} is not a valid number timestamp`);
         }
 
         if (!Array.isArray($$.i18n.months) || $$.i18n.months.length !== 12) {
-          throw new TypeError(`${$$.i18n.months} is not a valid array of months. Use $$.i18n.months to set it.`);
+          throw new TypeError(`${globalVariable}.i18n.months is not a valid array of months. Use ${globalVariable}.i18n.months to set it.`);
         }
 
         if (!Array.isArray($$.i18n.days) || $$.i18n.days.length !== 7) {
-          throw new TypeError(`${$$.i18n.days} is not a valid array of week days. Use $$.i18n.days to set it.`);
+          throw new TypeError(`${globalVariable}.i18n.days is not a valid array of week days. Use ${globalVariable}.i18n.days to set it.`);
         }
 
         const validFormat = {};
-        const dateObject = new Date(timestamp);
+        const dateObject = new Date(timestamp + (offset * 60 * 60 * 1000));
 
-        validFormat.d = $$.lpad(dateObject.getDate().toString(), '0', 2);
-        validFormat.j = dateObject.getDate();
-        validFormat.w = dateObject.getDay();
-        validFormat.N = validFormat.w + 1;
-        validFormat.m = $$.lpad((dateObject.getMonth() + 1).toString(), '0', 2);
-        validFormat.n = dateObject.getMonth() + 1;
-        validFormat.Y = dateObject.getFullYear();
-        validFormat.y = validFormat.Y.toString().substring(-2);
+        validFormat.d = $$.lpad(dateObject.getUTCDate().toString(), '0', 2);
+        validFormat.j = dateObject.getUTCDate();
+        validFormat.w = dateObject.getUTCDay();
+        validFormat.N = validFormat.w === 0 ? 7 : validFormat.w;
+        validFormat.m = $$.lpad((dateObject.getUTCMonth() + 1).toString(), '0', 2);
+        validFormat.n = dateObject.getUTCMonth() + 1;
+        validFormat.Y = dateObject.getUTCFullYear();
+        validFormat.y = validFormat.Y.toString().substr(-2);
 
         validFormat.a = 'am';
         validFormat.A = 'AM';
-        validFormat.G = dateObject.getHours();
+        validFormat.G = dateObject.getUTCHours();
         validFormat.H = $$.lpad(validFormat.G.toString(), '0', 2);
-        validFormat.g = dateObject.getHours() === 0 ? 12 : dateObject.getHours();
+        validFormat.g = validFormat.G === 0 ? 12 : validFormat.G;
 
-        if (dateObject.getHours() > 12) {
+        if (validFormat.G > 12) {
           validFormat.a = 'pm';
           validFormat.A = 'PM';
-          validFormat.g = dateObject.getHours() === 0 ? 12 : dateObject.getHours() - 12;
+          validFormat.g = validFormat.G - 12;
         }
 
         validFormat.h = $$.lpad(validFormat.g.toString(), '0', 2);
-        validFormat.i = $$.lpad(dateObject.getMinutes().toString(), '0', 2);
-        validFormat.s = $$.lpad(dateObject.getSeconds().toString(), '0', 2);
+        validFormat.i = $$.lpad(dateObject.getUTCMinutes().toString(), '0', 2);
+        validFormat.s = $$.lpad(dateObject.getUTCSeconds().toString(), '0', 2);
         validFormat.v = dateObject.getMilliseconds();
 
-        validFormat.l = $$.i18n.days[dateObject.getDay()];
+        validFormat.l = $$.i18n.days[validFormat.w];
         validFormat.D = validFormat.l.substring(0, 3);
         validFormat.F = $$.i18n.months[dateObject.getMonth()];
         validFormat.M = validFormat.F.substring(0, 3);
 
         let fixedFormat = '';
         [...format].forEach((sym) => {
-          fixedFormat += {}
+          fixedFormat += Object
             .prototype
             .hasOwnProperty.call(validFormat, sym) ? validFormat[sym] : sym;
         });
@@ -392,7 +419,7 @@ window.UnitJS = (function UnitJSSingleton(global) {
   }
 
   eventList.forEach((event) => {
-    UNIT.prototype[event] = (fn) => {
+    UNIT.prototype[event] = function AddEventListenerEvent(fn) {
       if (typeof fn === 'function') {
         this.on(event, fn);
       } else {
