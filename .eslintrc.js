@@ -8,9 +8,9 @@ module.exports = {
     'no-param-reassign': ['error', { props: false }],
   },
   globals: {
-    UnitJS: true,
-    $: true,
-    requiredError: true,
-    FIXTURES: true,
+    UnitJS: 'writable',
+    $: 'writable',
+    requiredError: 'readonly',
+    FIXTURES: 'readonly',
   },
 };
