@@ -11,15 +11,9 @@ jobs:
           command: |
             curl -sSL "https://nodejs.org/dist/v14.17.0/node-v14.17.0-linux-x64.tar.xz" | sudo tar --strip-components=2 -xJ -C /usr/local/bin/ node-v14.17.0-linux-x64/bin/node
             curl https://www.npmjs.com/install.sh | sudo bash
-      - restore_cache:
-          key: dependency-cache-{{ checksum "package.json" }}
       - run:
           name: Install npm dependencies
           command: npm ci
-      - save_cache:
-          key: dependency-cache-{{ checksum "package.json" }}
-          paths:
-            - node_modules
       - run:
           name: Run linter
           command: npm run lint
