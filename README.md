@@ -16,13 +16,13 @@ Simple download the `src/` and import the library right into your development en
 ```
 
 ## What about JQuery
-Since JQuery cares about giving support to the vast of web browsers, it tends to be heavy. Most of its functions are not event used, like animations. I've seen projects that require JQuery just to use AJAX functionality, or just the animations. This is the reason I began developing UnitJS
+Since JQuery cares about giving support to the vast of web browsers, it tends to be heavy. Most of its functions are not even used, like animations. I've seen projects that require JQuery just to use AJAX functionality, or just the animations. This is the reason I began developing UnitJS.
 
 ## What about UnitJS
-I believe a library should have a purpose and one purpose only. In this case, I build UnitJS to have just the one thing I use the most in JQuery: DOM manipulation. I could easily add AJAX functionality, or even animations, but then I'll be creating a JQuery copy. UnitJS is just there to manipulate the DOM, to make your life easier, not to learn a whole new framework just to start coding.
+I believe a library should have a purpose and one purpose only. In this case, I built UnitJS to have just the one thing I used the most in JQuery: DOM manipulation. I could easily add AJAX functionality, or even animations, but then I'll be creating a JQuery copy. UnitJS is just there to manipulate the DOM, to make your life easier, not to learn a whole new framework just to start coding.
 
 ## You should use UnitJS
-No, you don't!. UnitJS was built for personal use, but you're free to use it if you need it. Be aware though, this library doesn't support all browsers and will not (until all browsers support ES6 I guess).
+No, you don't need to!. UnitJS was built for personal use, but you're free to use it if you need it. Be aware though, this library doesn't support all browsers and will not (until all browsers support ES6 I guess).
 
 If you just started learning JavaScript, perhaps you shouldn't use this at all. You need to understand what's happening behind scenes before using this library (or any library or framework for that matter).
 
