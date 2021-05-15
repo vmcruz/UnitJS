@@ -21,14 +21,14 @@ SOFTWARE.
 */
 
 window.UnitJS = (function UnitJSSingleton(global) {
-  const eventList = Object.keys(global).filter(e => e.match(/^on/)).map(e => e.replace('on', ''));
+  const eventList = Object.keys(global).filter((event) => event.match(/^on/)).map((event) => event.replace('on', ''));
 
   function required(paramName, paramType) {
     throw new Error(`expected ${paramName} param to be [ ${paramType} ]`);
   }
 
-  function camelFromKebab(word) {
-    const fixedArray = word.split('-').map(e => e.charAt(0).toUpperCase() + e.slice(1).toLowerCase());
+  function camelFromKebab(kebab) {
+    const fixedArray = kebab.split('-').map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase());
     fixedArray[0] = fixedArray[0].toLowerCase();
     return fixedArray.join('');
   }
@@ -73,7 +73,7 @@ window.UnitJS = (function UnitJSSingleton(global) {
 
     toggleClass(className = required('ClassName', 'String')) {
       if (typeof className === 'string' && className) {
-        this.nodes.forEach(node => node.classList.toggle(className));
+        this.nodes.forEach((node) => node.classList.toggle(className));
         return this;
       }
 
@@ -82,11 +82,11 @@ window.UnitJS = (function UnitJSSingleton(global) {
 
     on(event = required('Event', 'String'), ...fns) {
       if (typeof event === 'string' && eventList.includes(event)) {
-        const areFunctions = fns.every(fn => typeof fn === 'function');
+        const areFunctions = fns.every((fn) => typeof fn === 'function');
         if (!areFunctions) throw new TypeError('Second or further params are not valid functions');
 
         this.nodes.forEach((node) => {
-          fns.forEach(fn => node.addEventListener(event, fn, false));
+          fns.forEach((fn) => node.addEventListener(event, fn, false));
         });
 
         return this;
@@ -141,7 +141,7 @@ window.UnitJS = (function UnitJSSingleton(global) {
 
     haveClass(className = required('ClassName', 'String')) {
       if (typeof className === 'string' && className) {
-        return this.nodes.every(node => node.classList.contains(className));
+        return this.nodes.every((node) => node.classList.contains(className));
       }
 
       throw new TypeError(`${className} is not a string className`);

@@ -3,9 +3,9 @@ module.exports = (config) => {
     frameworks: ['jasmine'],
     files: [
       './build/unit.min.js',
-      './test/helper/fixtures.js',
-      './test/helper/requiredError.js',
-      './test/**/*.spec.js',
+      './src/test/helper/fixtures.js',
+      './src/test/helper/requiredError.js',
+      './src/test/**/*.spec.js',
     ],
     reporters: ['spec'],
     colors: true,
@@ -21,4 +21,4 @@ module.exports = (config) => {
     logLevel: config.LOG_INFO,
     singleRun: true,
   });
-}
+};

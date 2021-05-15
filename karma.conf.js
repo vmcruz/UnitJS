@@ -1,11 +1,20 @@
+function grep(argv) {
+  let found = false;
+  return argv.filter((a) => {
+    if (found) return a;
+    if (a === '--') found = true;
+    return false;
+  });
+}
+
 module.exports = (config) => {
   config.set({
     frameworks: ['jasmine'],
     files: [
       './src/unit.js',
-      './test/helper/fixtures.js',
-      './test/helper/requiredError.js',
-      ...grep(process.argv)
+      './src/test/helper/fixtures.js',
+      './src/test/helper/requiredError.js',
+      ...grep(process.argv),
     ],
     reporters: ['spec', 'coverage'],
     colors: true,
@@ -18,7 +27,7 @@ module.exports = (config) => {
       reporters: [
         { type: 'html', subdir: 'html' },
         { type: 'text' },
-      ]
+      ],
     },
     specReporter: {
       suppressErrorSummary: false,
@@ -32,11 +41,3 @@ module.exports = (config) => {
     singleRun: true,
   });
 };
-
-function grep(argv) {
-  let found = false;
-  return argv.filter((a) => {
-    if (found) return a;
-    if (a === '--') found = true;
-  });
-}
