@@ -7,8 +7,10 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Update npm
-          command: sudo npm install -g npm@6.5.0
+          name: Update Node.js and npm
+          command: |
+            curl -sSL "https://nodejs.org/dist/v14.17.0/node-v14.17.0-linux-x64.tar.xz" | sudo tar --strip-components=2 -xJ -C /usr/local/bin/ node-v14.17.0-linux-x64/bin/node
+            curl https://www.npmjs.com/install.sh | sudo bash
       - restore_cache:
           key: dependency-cache-{{ checksum "package.json" }}
       - run:
