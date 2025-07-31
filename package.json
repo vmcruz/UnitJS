@@ -1,6 +1,6 @@
 {
   "name": "@sandboxed/unitjs",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "description": "UnitJS follows the `Revealing Module Pattern`. Easy to use DOM manipulation light-weight library",
   "main": "lib/cjs/unit.cjs",
   "module": "./lib/esm/unit.js",
