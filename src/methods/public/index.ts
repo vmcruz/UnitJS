@@ -17,6 +17,7 @@ import removeClass from './removeClass';
 import text from './text';
 import toggleClass from './toggleClass';
 import value from './value';
+import get from './get';
 
 export {
   addClass,
@@ -38,4 +39,5 @@ export {
   text,
   toggleClass,
   value,
+  get,
 };

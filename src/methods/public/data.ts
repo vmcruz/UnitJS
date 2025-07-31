@@ -12,16 +12,16 @@ import { allOf, camelFromKebab, isNullOrUndefined } from '../../utils/fns';
 function data(this: UnitJSClass, property: string, value?: string) {
   allOf({ values: [property], typeOf: ['string'] });
 
+  const camelProperty = camelFromKebab(property);
+
   if (isNullOrUndefined(value)) {
-    return this.__nodes__[0].dataset[property];
+    return this.__nodes__[0].dataset[camelProperty];
   }
 
   allOf({ values: [value], typeOf: ['string'], allowEmptyString: true });
 
-  const propertyCamel = camelFromKebab(property);
-
   this.__nodes__.forEach((node) => {
-    node.dataset[propertyCamel] = value;
+    node.dataset[camelProperty] = value;
   });
 
   return this;

@@ -70,4 +70,5 @@ export class UnitJSClass {
   text = publicMethods.text;
   toggleClass = publicMethods.toggleClass;
   value = publicMethods.value;
+  get = publicMethods.get;
 }

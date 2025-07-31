@@ -3,7 +3,7 @@
  *
  * @returns {{ months: string[], days: string[] }}
  */
-declare function get(): {
+declare function get$1(): {
     months: string[];
     days: string[];
 };
@@ -57,6 +57,7 @@ declare class UnitJSClass {
     text: typeof text;
     toggleClass: typeof toggleClass;
     value: typeof value;
+    get: typeof get;
 }
 
 /**
@@ -239,6 +240,13 @@ declare function toggleClass(this: UnitJSClass, ...classNames: string[]): UnitJS
 declare function value(this: UnitJSClass, value?: any): string | UnitJSClass;
 
 /**
+ * Returns the nth node in the collection.
+ *
+ * @returns {any|null} The nth node, or `null` if empty.
+ */
+declare function get(this: UnitJSClass, index: number): any;
+
+/**
  * Creates a new DOM element by tag name.
  *
  * @param {string} element - The tag name of the element to create.
@@ -304,7 +312,7 @@ declare const UnitJS: {
     i18n: {
         days: typeof days;
         months: typeof months;
-        get: typeof get;
+        get: typeof get$1;
     };
 };
 

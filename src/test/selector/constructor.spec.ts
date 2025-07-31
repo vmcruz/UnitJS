@@ -22,5 +22,7 @@ describe('UnitJS.prototype.constructor', () => {
 
     const testDiv = document.createElement('div');
     expect($(testDiv).nodes[0].tagName === 'DIV').toBeTruthy();
+    expect($(testDiv).get(0).tagName).toEqual('DIV');
+    expect($(testDiv).first().tagName).toEqual('DIV');
   });
 });
