@@ -1,13 +1,22 @@
 {
-  "name": "unitjs",
+  "name": "@sandboxed/unitjs",
   "version": "1.0.0",
-  "description": "UnitJS is a personal project I've been developing over the years. It follows the `Revealing Module Pattern` along with the [`IIFE Pattern`](http://benalman.com/news/2010/11/immediately-invoked-function-expression/). Started as a simple script for one website, but I realized that as I developed new websites, the same functionality was required. Instead of copy&pasting the code, I decided to start building this library for personal use.",
-  "main": "unit.js",
+  "description": "UnitJS follows the `Revealing Module Pattern`. Easy to use DOM manipulation light-weight library",
+  "main": "lib/cjs/unit.cjs",
+  "module": "./lib/esm/unit.js",
+  "exports": {
+    "import": "./lib/esm/unit.js",
+    "require": "./lib/cjs/unit.cjs"
+  },
+  "types": "lib/unit.d.ts",
+  "files": [
+    "lib",
+    "docs"
+  ],
   "scripts": {
-    "test:grep": "karma start karma.conf.js --",
-    "test": "npm run test:grep -- ./src/test/**/*.spec.js",
-    "lint": "eslint ./src/**/*.js",
-    "build:min": "google-closure-compiler --js='src/*.js' --js_output_file build/unit.min.js --create_source_map build/unit.js.map",
+    "test": "jest",
+    "lint": "tsc --noEmit && eslint './src/**/*.{js,ts,tsx}'",
+    "build": "yarn test && yarn lint && tsup",
     "postbuild:min": "karma start karma.build.conf.js"
   },
   "repository": {
@@ -21,18 +30,21 @@
     "url": "https://github.com/vmcruz/UnitJS/issues"
   },
   "homepage": "https://github.com/vmcruz/UnitJS#readme",
-  "dependencies": {},
   "devDependencies": {
-    "eslint": "7.26.0",
-    "eslint-config-airbnb-base": "14.2.1",
-    "eslint-plugin-import": "2.23.2",
-    "google-closure-compiler": "20210505.0.0",
-    "jasmine-core": "3.7.1",
-    "karma": "6.3.2",
-    "karma-chrome-launcher": "3.1.0",
-    "karma-coverage": "2.0.3",
-    "karma-jasmine": "4.0.1",
-    "karma-spec-reporter": "0.0.32"
+    "@stylistic/eslint-plugin": "^5.2.2",
+    "@swc/core": "^1.13.2",
+    "@types/jest": "^30.0.0",
+    "eslint": "9.20.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.3",
+    "jest": "^30.0.5",
+    "jest-environment-jsdom": "^30.0.5",
+    "prettier": "^3.6.2",
+    "ts-jest": "^29.4.0",
+    "tsup": "^8.5.0",
+    "typescript": "^5.8.3",
+    "typescript-eslint": "^8.38.0"
   },
-  "node": "^10.12.0 || >=12.0.0" 
+  "node": ">=18.0.0",
+  "type": "module"
 }
