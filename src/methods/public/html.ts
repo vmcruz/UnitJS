@@ -16,7 +16,12 @@ function html(this: UnitJSClass, html?: string | HTMLElement, append = false) {
 
   const strHtml = html instanceof HTMLElement ? html.innerHTML : html;
 
-  allOf({ values: [strHtml], typeOf: ['string'], instanceOf: [HTMLElement] });
+  allOf({
+    values: [strHtml],
+    typeOf: ['string'],
+    instanceOf: [HTMLElement],
+    allowEmptyString: true,
+  });
 
   this.__nodes__.forEach((node) => {
     if (append) {

@@ -16,7 +16,7 @@ function data(this: UnitJSClass, property: string, value?: string) {
     return this.__nodes__[0].dataset[property];
   }
 
-  allOf({ values: [value], typeOf: ['string'] });
+  allOf({ values: [value], typeOf: ['string'], allowEmptyString: true });
 
   const propertyCamel = camelFromKebab(property);
 

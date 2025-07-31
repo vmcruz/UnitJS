@@ -13,7 +13,7 @@ function text(this: UnitJSClass, text?: string) {
     return this.__nodes__[0].textContent;
   }
 
-  allOf({ values: [text], typeOf: ['string'] });
+  allOf({ values: [text], typeOf: ['string'], allowEmptyString: true });
 
   this.__nodes__.forEach((node) => {
     node.textContent = text;
