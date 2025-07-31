@@ -1,3 +1,4 @@
+import { DAYS, MONTHS } from '../../constants';
 import { UnitJS as $ } from '../../unit';
 import RequiredType from '../../utils/RequiredType.error';
 
@@ -36,5 +37,9 @@ describe('UnitJS.i18n', () => {
     expect(() => {
       $.i18n.days(['a', 'b']);
     }).toThrow(SyntaxError);
+  });
+
+  it('should return the i18n object', () => {
+    expect($.i18n.get()).toMatchObject({ months: MONTHS, days: DAYS });
   });
 });

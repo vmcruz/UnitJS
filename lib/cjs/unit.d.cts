@@ -1,4 +1,14 @@
 /**
+ * Exposes the i18n configuration object.
+ *
+ * @returns {{ months: string[], days: string[] }}
+ */
+declare function get(): {
+    months: string[];
+    days: string[];
+};
+
+/**
  * Sets the localized month names.
  *
  * @param {string[]} months - Array of 12 month names.
@@ -294,6 +304,7 @@ declare const UnitJS: {
     i18n: {
         days: typeof days;
         months: typeof months;
+        get: typeof get;
     };
 };
 

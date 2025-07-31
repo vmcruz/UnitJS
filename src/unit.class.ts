@@ -1,6 +1,5 @@
 import { DAYS, MONTHS, SHORTCUT_EVENTS } from './constants';
 import { publicMethods } from './methods';
-import { allOf } from './utils/fns';
 
 export class UnitJSClass {
   __nodes__: any[] = [];
@@ -12,12 +11,6 @@ export class UnitJSClass {
   };
 
   constructor(...selectors: any[]) {
-    allOf({
-      values: selectors,
-      typeOf: ['string'],
-      instanceOf: [Element, Document],
-    });
-
     selectors.forEach((selector) => {
       if (typeof selector === 'string') {
         try {

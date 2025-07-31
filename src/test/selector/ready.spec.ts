@@ -39,16 +39,23 @@ describe('UnitJS.prototype.ready', () => {
   it('should call the function provided once the element is loaded', () => {
     const fn = jest.fn();
 
-    const loadEvent = new Event('load', {
+    const loadEvent = new Event('DOMContentLoaded', {
+      bubbles: false,
+      cancelable: false,
+    });
+
+    const windowLoadEvent = new Event('load', {
       bubbles: false,
       cancelable: false,
     });
 
     $(document).ready(fn);
+    $(window).ready(fn);
 
     document.dispatchEvent(loadEvent);
+    window.dispatchEvent(windowLoadEvent);
 
     expect(fn).toHaveBeenCalled();
-    expect(fn).toHaveBeenCalledTimes(1);
+    expect(fn).toHaveBeenCalledTimes(2);
   });
 });

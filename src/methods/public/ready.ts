@@ -13,7 +13,11 @@ function ready(this: UnitJSClass, fn: (ev: Event) => void) {
   allOf({ values: [fn], typeOf: ['function'] });
 
   this.__nodes__.forEach((node) => {
-    node.addEventListener('load', fn, false);
+    if (node instanceof Window || node.nodeType === 1) {
+      node.addEventListener('load', fn, false);
+    } else {
+      node.addEventListener('DOMContentLoaded', fn, false);
+    }
   });
   return this;
 }
