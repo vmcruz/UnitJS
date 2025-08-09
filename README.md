@@ -1,4 +1,4 @@
-# UnitJS v2.0.0 [![CI](https://github.com/vmcruz/UnitJS/actions/workflows/ci.yml/badge.svg)](https://github.com/vmcruz/UnitJS/actions/workflows/ci.yml)
+# UnitJS v2.2.1 [![CI](https://github.com/vmcruz/UnitJS/actions/workflows/ci.yml/badge.svg)](https://github.com/vmcruz/UnitJS/actions/workflows/ci.yml)
 
 # About
 UnitJS is a personal project I've been developing over the years. It follows the `Revealing Module Pattern` along with the [`IIFE Pattern`](http://benalman.com/news/2010/11/immediately-invoked-function-expression/). Started as a simple script for one website, but I realized that as I developed new websites, the same functionality was required. Instead of copy&pasting the code, I decided to start building this library for personal use.
