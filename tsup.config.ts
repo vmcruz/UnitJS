@@ -9,7 +9,7 @@ const baseConfig = {
 
 const baseConfigMinified = {
   minify: true,
-  sourcemap: false,
+  sourcemap: true,
   outExtension() {
     return { js: '.min.js' };
   },
