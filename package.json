@@ -1,6 +1,6 @@
 {
   "name": "@sandboxed/unitjs",
-  "version": "2.2.2",
+  "version": "2.2.4",
   "description": "UnitJS follows the `Revealing Module Pattern`. Easy to use DOM manipulation light-weight library",
   "main": "lib/cjs/unit.cjs",
   "module": "./lib/esm/unit.js",
@@ -41,10 +41,10 @@
     "jest-environment-jsdom": "^30.0.5",
     "prettier": "^3.6.2",
     "ts-jest": "^29.4.0",
-    "tsup": "^8.5.0",
+    "tsup": "8.5.0",
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.38.0"
   },
-  "node": ">=18.0.0",
+  "node": ">=20.19.0",
   "type": "module"
 }
