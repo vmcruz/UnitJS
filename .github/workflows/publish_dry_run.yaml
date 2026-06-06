@@ -1,0 +1,39 @@
+name: Publish to npm dry-run
+run-name: Dry-run ${{ github.ref_name }}
+
+on:
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+  packages: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - run: |
+          if [[ "${{ github.ref }}" != refs/tags/* ]]; then
+            echo "This workflow can only be run from a tag."
+            exit 1
+          fi
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: 'package.json'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build package
+        run: npm run build
+
+      - name: Dry run publish
+        run: npm publish --dry-run --provenance --access public
