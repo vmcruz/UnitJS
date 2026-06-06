@@ -15,9 +15,9 @@
   ],
   "scripts": {
     "test": "jest",
-    "lint": "tsc --noEmit && eslint './src/**/*.{js,ts,tsx}'",
-    "build": "yarn test && yarn lint && tsup",
-    "postbuild:min": "karma start karma.build.conf.js"
+    "lint": "tsc --version && tsc --noEmit && eslint './src/**/*.{js,ts,tsx}'",
+    "verify:build": "npm run lint && npm run test",
+    "build": "npm run verify:build && tsup"
   },
   "repository": {
     "type": "git",
@@ -34,7 +34,7 @@
     "@stylistic/eslint-plugin": "^5.2.2",
     "@swc/core": "^1.13.2",
     "@types/jest": "^30.0.0",
-    "eslint": "9.20.0",
+    "eslint": "^9.39.4",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.3",
     "jest": "^30.0.5",
