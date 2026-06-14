@@ -49,5 +49,10 @@
     "node": ">=20.19.0"
   },
   "engineStrict": true,
-  "type": "module"
+  "type": "module",
+  "overrides": {
+    "tsup": {
+      "esbuild": "0.28.1"
+    }
+  }
 }
